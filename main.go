@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -26,6 +27,8 @@ func main() {
 	subArgs := os.Args[2:]
 	code := exitOK
 	switch command {
+	case "list":
+		code = commandList(subArgs)
 	case "new":
 		code = commandNew(subArgs)
 	default:
@@ -49,7 +52,7 @@ func commandNew(args []string) exitCode {
 		return exitError
 	}
 
-	curmax := 1
+	curmax := 0
 	if paths, err := filepath.Glob(filepath.Join(dir, "[1-9].go")); err == nil {
 		for _, path := range paths {
 			stem, _ := strings.CutSuffix(filepath.Base(path), ".go")
@@ -60,8 +63,33 @@ func commandNew(args []string) exitCode {
 		}
 	}
 
-	fmt.Println(dir)
-	fmt.Println(curmax)
+	newName := fmt.Sprintf("%d.go", curmax+1)
+	newPath := filepath.Join(dir, newName)
+	file, err := os.Create(newPath)
+	if err != nil {
+		fmt.Printf("error: failed to create file: %s: %s\n", newPath, err)
+		return exitError
+	}
+	defer file.Close()
+
+	io.WriteString(file, "hello")
+
+	return exitOK
+}
+
+func commandList(args []string) exitCode {
+	u, err := user.Current()
+	if err != nil {
+		fmt.Println("error: failed to get current user")
+		return exitError
+	}
+
+	dir := filepath.Join(os.TempDir(), "goplay_"+u.Username)
+	if paths, err := filepath.Glob(filepath.Join(dir, "[1-9].go")); err == nil {
+		for _, path := range paths {
+			fmt.Println(path)
+		}
+	}
 
 	return exitOK
 }
