@@ -72,7 +72,16 @@ func commandNew(args []string) exitCode {
 	}
 	defer file.Close()
 
-	io.WriteString(file, "hello")
+	template := `package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, 世界")
+}
+`
+
+	io.WriteString(file, template)
 
 	return exitOK
 }
