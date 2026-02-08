@@ -1,13 +1,17 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 )
 
-const template = `package main
+const (
+	maxNum = 3
+
+	template = `package main
 
 import "fmt"
 
@@ -15,6 +19,7 @@ func main() {
 	fmt.Println("Hello, 世界")
 }
 `
+)
 
 func commandNew(args []string) error {
 	dir, err := baseDir()
@@ -26,7 +31,7 @@ func commandNew(args []string) error {
 		return fmt.Errorf("failed to create directory: %s: %w", dir, err)
 	}
 
-	num := 0
+	const num = 0
 	if err := rotate(dir, num); err != nil {
 		return fmt.Errorf("failed to rotate: %s: %w", dir, err)
 	}
@@ -56,46 +61,44 @@ func commandNew(args []string) error {
 }
 
 func rotate(dir string, n int) error {
-	return nil
+	if n > maxNum {
+		panic("over limit")
+	}
 
-	//		const limit = 9
-	//
-	//		if n > limit {
-	//			panic(fmt.Sprintf("over limit: dir=%s, limit=%d, n=%d", dir, limit, n))
-	//		}
-	//
-	//		cur := filepath.Join(dir, fmt.Sprintf("%d.go", n))
-	//		if n == limit {
-	//			// TODO
-	//		}
-	//
-	//		old := filepath.Join(dir, fmt.Sprintf("%d.go", n+1))
-	//
-	//		if _, err := os.Stat(old); errors.Is(err, os.ErrNotExist) {
-	//			err := os.Rename(cur, old)
-	//			if err != nil {
-	//				return err
-	//			}
-	//		}
-	//
-	//		err := rotate(dir, n+1)
-	//
-	//		_ = cur
-	//		_ = old
-	//
-	//		return nil
-	//	}
-	//
-	//	func exists(path string) (bool, error) {
-	//		_, err := os.Stat(path)
-	//		if err != nil {
-	//			if errors.Is(err, os.ErrNotExist) {
-	//				return false, nil
-	//			} else {
-	//				return false, err
-	//			}
-	//
-	//		} else {
-	//			return true, nil
-	//		}
+	cur := filepath.Join(dir, fmt.Sprintf("%d.go", n))
+	if !exists(cur) {
+		return nil
+	}
+
+	if n == maxNum {
+		if err := os.Remove(cur); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	old := filepath.Join(dir, fmt.Sprintf("%d.go", n+1))
+	if exists(old) {
+		if err := rotate(dir, n+1); err != nil {
+			return err
+		}
+	}
+
+	if err := os.Rename(cur, old); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		if !errors.Is(err, os.ErrNotExist) {
+			panic(err)
+		}
+		return false
+	}
+
+	return true
 }
