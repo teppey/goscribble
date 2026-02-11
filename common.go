@@ -13,5 +13,17 @@ func baseDir() (string, error) {
 		return "", errors.New("failed to get current user")
 	}
 
-	return filepath.Join(os.TempDir(), "goplay_"+u.Username), nil
+	return filepath.Join(os.TempDir(), "gosketch_"+u.Username), nil
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		if !errors.Is(err, os.ErrNotExist) {
+			panic(err)
+		}
+		return false
+	}
+
+	return true
 }

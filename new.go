@@ -1,15 +1,13 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 )
 
 const (
-	maxNum = 3
+	numBackup = 9
 
 	template = `package main
 
@@ -37,13 +35,9 @@ func commandNew(args []string) error {
 	}
 
 	newPath := filepath.Join(dir, fmt.Sprintf("%d.go", num))
-	file, err := os.Create(newPath)
-	if err != nil {
-		return fmt.Errorf("failed to create file: %s: %w", newPath, err)
+	if err := os.WriteFile(newPath, []byte(template), 0600); err != nil {
+		return fmt.Errorf("failed to write file: %s: %w", newPath, err)
 	}
-	defer file.Close()
-
-	io.WriteString(file, template)
 
 	if err := edit(newPath); err != nil {
 		return err
@@ -61,8 +55,9 @@ func commandNew(args []string) error {
 }
 
 func rotate(dir string, n int) error {
-	if n > maxNum {
-		panic("over limit")
+	if n > numBackup {
+		msg := fmt.Sprintf("`n` should be `numBackup` or less: n=%d, numBackup:%d", n, numBackup)
+		panic(msg)
 	}
 
 	cur := filepath.Join(dir, fmt.Sprintf("%d.go", n))
@@ -70,7 +65,7 @@ func rotate(dir string, n int) error {
 		return nil
 	}
 
-	if n == maxNum {
+	if n == numBackup {
 		if err := os.Remove(cur); err != nil {
 			return err
 		}
@@ -89,16 +84,4 @@ func rotate(dir string, n int) error {
 	}
 
 	return nil
-}
-
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	if err != nil {
-		if !errors.Is(err, os.ErrNotExist) {
-			panic(err)
-		}
-		return false
-	}
-
-	return true
 }

@@ -12,6 +12,7 @@ func commandClear(args []string) error {
 		return err
 	}
 
+	// TODO: "9"以上の数字のファイルに対応
 	if paths, err := filepath.Glob(filepath.Join(dir, "[0-9].go")); err == nil {
 		for _, path := range paths {
 			if err := os.Remove(path); err != nil {
