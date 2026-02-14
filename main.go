@@ -14,7 +14,7 @@ const (
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("goscrawl is a tool for edit and run a Go code like the \"Go Playgrond\".\n")
+		fmt.Println("goscrawl is a tool for edit and run Go code instantly on console.\n")
 		fmt.Println("Usage:\n")
 		fmt.Println("\tgoscrawl <command> [arguments]\n")
 		fmt.Println("The commands are:\n")
