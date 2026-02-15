@@ -15,7 +15,7 @@ func baseDir() (string, error) {
 		return "", errors.New("failed to get current user")
 	}
 
-	return filepath.Join(os.TempDir(), "gosketch_"+u.Username), nil
+	return filepath.Join(os.TempDir(), "goscribble_"+u.Username), nil
 }
 
 func exists(path string) bool {

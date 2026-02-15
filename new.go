@@ -14,12 +14,12 @@ const (
 import "fmt"
 
 func main() {
-	fmt.Println("Hello, 世界")
+	fmt.Println("Hello, world")
 }
 `
 )
 
-func commandNew(args []string) error {
+func newCommand(args []string) error {
 	dir, err := baseDir()
 	if err != nil {
 		return err

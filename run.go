@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 )
 
-func commandRun(args []string) error {
+func runCommand(args []string) error {
 	dir, err := baseDir()
 	if err != nil {
 		return err

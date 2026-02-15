@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 )
 
-func commandEdit(args []string) error {
+func editCommandEdit(args []string) error {
 	dir, err := baseDir()
 	if err != nil {
 		return err

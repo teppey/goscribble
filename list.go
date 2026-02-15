@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-func commandList(args []string) error {
+func listCommand(args []string) error {
 	dir, err := baseDir()
 	if err != nil {
 		return err

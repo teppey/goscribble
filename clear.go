@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func commandClear(args []string) error {
+func clearCommand(args []string) error {
 	dir, err := baseDir()
 	if err != nil {
 		return err

@@ -19,6 +19,7 @@ func main() {
 		fmt.Println("\tgoscribble <command> [arguments]\n")
 		fmt.Println("The commands are:\n")
 		fmt.Println("\tclear  clear all files")
+		fmt.Println("\tdir    print directory path")
 		fmt.Println("\tedit   edit and run file")
 		fmt.Println("\tlist   list all files")
 		fmt.Println("\tnew    create and edit file and run it")
@@ -32,17 +33,19 @@ func main() {
 	var err error
 	switch command {
 	case "clear":
-		err = commandClear(subArgs)
+		err = clearCommand(subArgs)
+	case "dir":
+		err = dirCommand(subArgs)
 	case "edit":
-		err = commandEdit(subArgs)
+		err = editCommandEdit(subArgs)
 	case "list":
-		err = commandList(subArgs)
+		err = listCommand(subArgs)
 	case "new":
-		err = commandNew(subArgs)
+		err = newCommand(subArgs)
 	case "run":
-		err = commandRun(subArgs)
+		err = runCommand(subArgs)
 	case "show":
-		err = commandShow(subArgs)
+		err = showCommand(subArgs)
 	default:
 		err = fmt.Errorf("unknown command: %s", command)
 	}

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func commandShow(args []string) error {
+func showCommand(args []string) error {
 	dir, err := baseDir()
 	if err != nil {
 		return err
